@@ -19,10 +19,17 @@ let ObjectID = require('mongodb').ObjectID;
   
 async function getOne(req, res, next) {
   
-    const data = await Item.find({}).catch((e) => console.log(e));
+    const data = await Item.findOne({id: parseInt(req.params.id)}).catch((e) => console.log(e));
   
     res.json({
-      data: data
+      data: {
+        type: 'items',
+        id: parseInt(data.id),
+        attributes: data,
+        links: {
+          self: ''
+        }
+      }
     });
 }
 
