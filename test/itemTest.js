@@ -2,7 +2,11 @@
 
 var chai = require('chai');
 var chaiHttp = require('chai-http');
-var app = 'http://localhost:3000/api/v1/checklists';
+const { exists } = require('../model/items');
+// var app = 'http://localhost:3000/api/v1/checklists';
+
+const app = require('./../bin/www');
+
 // Configure chai
 
 chai.use(chaiHttp);
@@ -14,7 +18,7 @@ let token = '6d7f3f6e-269c-4e1b-abf8-9a0add479511';
 chai.should();
 
 describe("Items API Test", () => {
-    describe("GET /api/v1/checklists/2/items", () => {
+    describe("Base URL : /api/v1/checklists/2/items", () => {
         
         // // Test to get all items record
         // it("Should get all items record for given checklist", (done) => {

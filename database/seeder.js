@@ -12,7 +12,7 @@ const collections = seeder.readCollectionsFromPath(path.resolve("database/data")
 
 async function start() {
     try {
-        console.log('Seeding data...');
+        // console.log('Seeding data...');
         await seeder.import(collections);
     } catch (err) {
         console.log(err);

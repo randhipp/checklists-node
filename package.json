@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "test": "mocha test/*.js -w",
+    "test": "mocha test/*.js --exit",
     "start": "node ./bin/www",
     "dev": "node ./bin/www",
     "debug": "DEBUG=checklists-node:*, nodemon --inspect ./bin/www"
