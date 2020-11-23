@@ -6,9 +6,7 @@ var logger = require('morgan');
 const expressAccessToken = require('express-access-token');
 
 var indexRouter = require('./routes/index');
-var authRouter = require('./routes/auth');
-var itemRouter = require('./routes/item');
-var checklistRouter = require('./routes/checklist');
+var apiRouter = require('./routes/api');
 
 var app = express();
 
@@ -38,19 +36,9 @@ const firewall = (req, res, next) => {
 
 app.use('/', indexRouter);
 
-app.use('api/v1/items', 
+app.use('/api/v1', 
   expressAccessToken,
-  firewall, itemRouter);
-
-
-app.use('/api/v1/checklists', 
-  expressAccessToken,
-  firewall, checklistRouter);
-
-app.use('api/v1/checklists/:checklistId/items', 
-  expressAccessToken,
-  firewall, itemRouter);
-
+  firewall, apiRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
