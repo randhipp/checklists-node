@@ -2,13 +2,16 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-let item = new Schema(
+let checklist = new Schema(
   {
-    description: {
+    object_domain: {
+      type: String
+    },
+    object_id: {
       type: String
     },
     is_completed: {
-      type: Boolean
+        type: Boolean
     },
     completed_at: {
         type: String
@@ -21,18 +24,12 @@ let item = new Schema(
     },
     updated_by: {
         type: Number
-    },
-    assignee_id: {
-        type: Number
-    },
-    task_id: {
-        type: Number
     }
 }
   ,{ 
-        collection: "items",
+        collection: "checklists",
         timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } 
     }
 );
 
-module.exports = mongoose.model("items", item);
+module.exports = mongoose.model("checklists", checklist);
