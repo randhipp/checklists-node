@@ -26,3 +26,10 @@ const accessTokens = [
 ```
 
 You can use one of thoose token to auth in api request `body.token` or in header `Authorization: Bearer {token}`
+
+## TESTING ##
+
+```bash
+npm test
+```
+
