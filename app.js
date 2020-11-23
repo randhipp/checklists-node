@@ -3,9 +3,12 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const expressAccessToken = require('express-access-token');
 
 var indexRouter = require('./routes/index');
-var apiRouter = require('./routes/api');
+var authRouter = require('./routes/auth');
+var itemRouter = require('./routes/item');
+var checklistRouter = require('./routes/checklist');
 
 var app = express();
 
@@ -19,9 +22,35 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+const accessTokens = [
+  "6d7f3f6e-269c-4e1b-abf8-9a0add479511",
+  "110546ae-627f-48d4-9cf8-fd8850e0ac7f",
+  "04b90260-3cb3-4553-a1c1-ecca1f83a381"
+];
+
+const firewall = (req, res, next) => {
+  const authorized = accessTokens.includes(req.accessToken);
+  if(!authorized) return res.status(401).json({
+    message: 'Unauthenticated',
+  });
+  next();
+};
+
 app.use('/', indexRouter);
-// app.use('/users', usersRouter);
-app.use('/api/v1', apiRouter);
+
+app.use('api/v1/items', 
+  expressAccessToken,
+  firewall, itemRouter);
+
+
+app.use('/api/v1/checklists', 
+  expressAccessToken,
+  firewall, checklistRouter);
+
+app.use('api/v1/checklists/:checklistId/items', 
+  expressAccessToken,
+  firewall, itemRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
