@@ -27,19 +27,20 @@ jobs:
     - run: npm ci
     - run: npm test
   
-#   deploy:
+  deploy:
+    needs: [test]
+    runs-on: ubuntu-latest
 
-#     runs-on: ubuntu-latest
-
-#     strategy:
-#       matrix:
-#         node-version: [12.x]
-
-#     steps:
-#     - uses: actions/checkout@v2
-#     - name: Use Node.js ${{ matrix.node-version }}
-#       uses: actions/setup-node@v1
-#       with:
-#         node-version: ${{ matrix.node-version }}
-#     - run: npm ci
-#     - run: npm run debug
+    steps:
+    - name: SSH and deploy node app
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: |
+          cd ~/checklist-node
+          git pull origin randhipp/ci-cd
+          npm ci
+          pm2 restart 0
