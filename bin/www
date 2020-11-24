@@ -23,11 +23,17 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var server = https.createServer({
-	key: fs.readFileSync('./ssl/privkey.pem'),
-	cert: fs.readFileSync('./ssl/fullchain.pem'),
-//	ca: fs.readFileSync('/etc/letsencrypt/path/to/chain.pem')
-},app);
+var environment = process.env.ENV;
+
+if(environment === 'DEVELOPMENT') {
+  var server = http.createServer(app);  
+} else {
+  var server = https.createServer({
+    key: fs.readFileSync('./ssl/privkey.pem'),
+    cert: fs.readFileSync('./ssl/fullchain.pem')
+  },app);  
+}
+
 
 const connection = connect();
 
