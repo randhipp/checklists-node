@@ -1,59 +1,87 @@
 var Item = require('./../model/items');
 let ObjectID = require('mongodb').ObjectID;
 
-async function getAll(req, res, paginate, next) {
-  if(req.body.select!='undefined'){
-    var sort=req.body.select;
-  }
+async function getAll(req, res, next) {
 
-  var perPage = 10
-  var page = req.query.page || 1
+  var perPage = req.query.limit || 10
+  var page = req.query.offset || 0
 
-  if (req.body.search!=undefined && req.body.search_field!=undefined && req.body.search!='' && req.body.search_field!='') {
-      var search = req.body.search;
-      var search_field = req.body.search_field;
-      var query = { 'search' : search_field };
+  const options = {
+    offset: page,
+    limit: perPage > 100 ? 100 : perPage,
+    collation: {
+      locale: 'en'
+    }
+  };
 
-      if (search == 'name') {
-          var query = { name : search_field };
-      }else if (search == 'email') {
-          var query = { email : search_field };
-      }else if (search == 'phone') {
-          var query = { phone : search_field };
-      }else if (search == 'city') {
-          var query = { city : search_field };
-      }else{
-          var query = { id : search_field };
-      }
-  }else{
-      var query = { 
-        // 'name': { $ne: null }
-       };
-  }
+      let result = await Item.paginate({}, options).catch(e => console.log(e));
 
-  Item.find(query).skip((perPage * page) - perPage).limit(perPage).sort(sort)
-  .exec(function(err, item) {
-          Item.count(query).exec(function(err, count) {
-              if (err) return next(err)
-              res.json({
-                  data: {
-                    type: 'items',
-                    id: parseInt(item.id),
-                    attributes: item,
-                    links: {
-                      self: ''
-                    }
-                  },
-                  links: {
-                    current: page,
-                    pages: Math.ceil(count / perPage),
-                  },
-                  meta: {
+      let items = result.docs;
+      
+      let itemsResponse = items.forEach( function(obj) {
+        var attributes = {};
 
-                  }
-                });
-          })
-      })
+        obj.forEach(function(prop) {
+          attributes[prop.name] = prop.value;
+        });
+        obj.type = 'checklist',
+        obj.id = obj.id,
+        obj.attributes = attributes;
+        obj.links = {
+          self: 'http://test.com'
+        }
+     });
+
+    res.json({
+      data: {
+        type: 'checklists',
+        id: parseInt(req.params.id),
+        attributes: itemsResponse,
+        links: {
+          self: ''
+        }
+      },
+      links: {
+        current: page,
+        pages: result.totalPages,
+      },
+      meta: result.meta
+    });
+    // result.docs
+    // result.totalDocs = 100
+    // result.limit = 10
+    // result.page = 1
+    // result.totalPages = 10
+    // result.hasNextPage = true
+    // result.nextPage = 2
+    // result.hasPrevPage = false
+    // result.prevPage = null
+    // result.pagingCounter = 1
+  // });
+
+  // Item.find(query).skip((perPage * page) - perPage).limit(perPage).sort(sort)
+  // .exec(function(err, item) {
+  //         Item.count(query).exec(function(err, count) {
+  //             if (err) return next(err)
+  //             res.json({
+  //                 data: {
+  //                   type: 'items',
+  //                   id: parseInt(item.id),
+  //                   attributes: item,
+  //                   links: {
+  //                     self: ''
+  //                   }
+  //                 },
+  //                 links: {
+  //                   current: page,
+  //                   pages: Math.ceil(count / perPage),
+  //                 },
+  //                 meta: {
+
+  //                 }
+  //               });
+  //         })
+  //     })
 }
 
   
@@ -75,4 +103,6 @@ async function getOne(req, res, next) {
 
 module.exports = {
     getOne: getOne,
+    getAll: getAll,
+
 };

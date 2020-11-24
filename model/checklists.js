@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const Schema = mongoose.Schema;
 
@@ -31,5 +32,7 @@ let checklist = new Schema(
         timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } 
     }
 );
+
+checklist.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("checklists", checklist);
