@@ -28,6 +28,9 @@ let item = new Schema(
     },
     task_id: {
         type: Number
+    },
+    checklist_id: {
+        type: Number
     }
 }
   ,{ 

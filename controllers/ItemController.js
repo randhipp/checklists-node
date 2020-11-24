@@ -3,85 +3,64 @@ let ObjectID = require('mongodb').ObjectID;
 
 async function getAll(req, res, next) {
 
-  var perPage = req.query.limit || 10
-  var page = req.query.offset || 0
+  var perPage = req.query.page['limit'] || 10
+  var page = req.query.page['offset'] || 0
+
+  const myCustomLabels = {
+    totalDocs: 'total',
+    // docs: 'itemsList',
+    limit: 'count',
+    // page: 'currentPage',
+    nextPage: 'next',
+    prevPage: 'prev',
+    // totalPages: 'pageCount',
+    // pagingCounter: 'slNo',
+    meta: 'meta'
+  };
 
   const options = {
     offset: page,
     limit: perPage > 100 ? 100 : perPage,
     collation: {
       locale: 'en'
-    }
+    },
+    customLabels: myCustomLabels
   };
 
-      let result = await Item.paginate({}, options).catch(e => console.log(e));
+  let results = await Item.paginate({}, options).catch(e => console.log(e));
 
-      let items = result.docs;
-      
-      let itemsResponse = items.forEach( function(obj) {
-        var attributes = {};
+  var itemsResponse = [];
 
-        obj.forEach(function(prop) {
-          attributes[prop.name] = prop.value;
-        });
-        obj.type = 'checklist',
-        obj.id = obj.id,
-        obj.attributes = attributes;
-        obj.links = {
-          self: 'http://test.com'
-        }
-     });
+  for (let obj of results.docs) {
+    // console.log(obj);
+    var attributes = {};
+    for (const prop in obj) {
+      attributes[prop] = obj[prop]; 
+    }
+    let itemUrl = req.protocol + '://' + req.get('host') + req.baseUrl ;  
+    itemsResponse.push({
+      type: 'items',
+      id: obj.id,
+      attributes: attributes,
+      links: {
+        self: `${itemUrl}/checklist/${obj.checklist_id}/items/${obj.id}`
+      }
+    })          
+  }
+
+    var url = req.protocol + '://' + req.get('host') + req.baseUrl + req.path;  
 
     res.json({
-      data: {
-        type: 'checklists',
-        id: parseInt(req.params.id),
-        attributes: itemsResponse,
-        links: {
-          self: ''
-        }
-      },
+      meta: results.meta,
       links: {
-        current: page,
-        pages: result.totalPages,
+        next: results.meta.hasNextPage === true ? `${url}?page[limit]=${perPage}&page[offset]=${page}` : null,
+        prev: results.meta.hasPrevPage === true ? `${url}?page[limit]=${perPage}&page[offset]=${page - perPage}` : null,
+        first: url+'?page[limit]='+perPage+'&page[offset]=0',
+        last: url+'?page[limit]='+perPage+'&page[offset]='+(parseInt(results.meta.total)-parseInt(perPage)),
       },
-      meta: result.meta
+      data: itemsResponse
     });
-    // result.docs
-    // result.totalDocs = 100
-    // result.limit = 10
-    // result.page = 1
-    // result.totalPages = 10
-    // result.hasNextPage = true
-    // result.nextPage = 2
-    // result.hasPrevPage = false
-    // result.prevPage = null
-    // result.pagingCounter = 1
-  // });
 
-  // Item.find(query).skip((perPage * page) - perPage).limit(perPage).sort(sort)
-  // .exec(function(err, item) {
-  //         Item.count(query).exec(function(err, count) {
-  //             if (err) return next(err)
-  //             res.json({
-  //                 data: {
-  //                   type: 'items',
-  //                   id: parseInt(item.id),
-  //                   attributes: item,
-  //                   links: {
-  //                     self: ''
-  //                   }
-  //                 },
-  //                 links: {
-  //                   current: page,
-  //                   pages: Math.ceil(count / perPage),
-  //                 },
-  //                 meta: {
-
-  //                 }
-  //               });
-  //         })
-  //     })
 }
 
   
