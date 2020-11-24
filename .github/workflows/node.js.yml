@@ -5,9 +5,9 @@ name: Checklist - Node.js CI
 
 on:
   push:
-    branches: [ randhipp/ci-cd ]
+    branches: [ development ]
   pull_request:
-    branches: [ randhipp/ci-cd ]
+    branches: [ development ]
 
 jobs:
   test:
@@ -38,10 +38,9 @@ jobs:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-#         passphrase: ${{ secrets.SSH_PASS }}
         port: 22
         script: |
           cd ~/checklist-node
-          git pull origin randhipp/ci-cd
+          git pull origin development
           npm ci
           pm2 restart 0
