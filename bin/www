@@ -9,6 +9,7 @@ var fs = require('fs');
 var app = require('../app');
 var debug = require('debug')('checklists-node:server');
 var https = require('https');
+var http = require('http');
 var mongoose = require('./../database/connection');
 const seeder = require('./../database/seeder');
 
@@ -24,11 +25,11 @@ app.set('port', port);
  */
 
 var environment = process.env.ENV;
-
+var server;
 if(environment !== 'PRODUCTION') {
-  var server = http.createServer(app);  
+  server = http.createServer(app);  
 } else {
-  var server = https.createServer({
+  server = https.createServer({
     key: fs.readFileSync('./ssl/privkey.pem'),
     cert: fs.readFileSync('./ssl/fullchain.pem')
   },app);  
