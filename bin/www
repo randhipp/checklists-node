@@ -25,7 +25,7 @@ app.set('port', port);
 
 var environment = process.env.ENV;
 
-if(environment === 'DEVELOPMENT') {
+if(environment !== 'PRODUCTION') {
   var server = http.createServer(app);  
 } else {
   var server = https.createServer({
