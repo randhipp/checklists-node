@@ -14,10 +14,9 @@ npm run debug
 ## LIVE DEV
 
 This code was live on :    
-http://checklists.wafvel.com:2086
+https://checklists.wafvel.com:2087
 
-
-Code updated using github action.
+code updated using github action.
 
 # Auth
 

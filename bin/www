@@ -5,9 +5,10 @@ require('dotenv').config()
  * Module dependencies.
  */
 
+var fs = require('fs');
 var app = require('../app');
 var debug = require('debug')('checklists-node:server');
-var http = require('http');
+var https = require('https');
 var mongoose = require('./../database/connection');
 const seeder = require('./../database/seeder');
 
@@ -22,7 +23,11 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+var server = https.createServer({
+	key: fs.readFileSync('./ssl/privkey.pem'),
+	cert: fs.readFileSync('./ssl/fullchain.pem'),
+//	ca: fs.readFileSync('/etc/letsencrypt/path/to/chain.pem')
+},app);
 
 const connection = connect();
 
