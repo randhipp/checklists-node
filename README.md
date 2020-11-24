@@ -1,5 +1,7 @@
 # Node-Checklist - BE Test
 
+![Checklist - Node.js CI](https://github.com/randhipp/checklists-node/workflows/Checklist%20-%20Node.js%20CI/badge.svg)
+
 NodeJS using Express and Mongoose
 
 ## How To Run
