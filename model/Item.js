@@ -6,7 +6,8 @@ const Schema = mongoose.Schema;
 let item = new Schema(
   {
     description: {
-      type: String
+      type: String,
+      required: true
     },
     is_completed: {
       type: Boolean
@@ -15,19 +16,22 @@ let item = new Schema(
         type: String
     },
     due: {
-        type: String
+        type: Date,
+        required: true
     },
     urgency: {
-        type: Number
+        type: Number,
+        required: true
     },
     updated_by: {
         type: Number
     },
     assignee_id: {
-        type: Number
+        type: Schema.Types.ObjectId,
+        required: true
     },
     task_id: {
-        type: Number
+        type: Schema.Types.ObjectId,
     },
     checklist_id: {
         type: Schema.Types.ObjectId,

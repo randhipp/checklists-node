@@ -1,5 +1,7 @@
 var Checklist = require('./../model/Checklist');
 var Item = require('./../model/Item');
+let ObjectID = require('mongodb').ObjectID;
+let isValidObjectId = require('mongoose').isValidObjectId;
 
 async function getAll(req, res, next) {
 
@@ -64,21 +66,14 @@ async function getAll(req, res, next) {
 
 
 async function getAllbyChecklistId(req, res, next) {
-
-  let data = await Checklist.findById(req.params.id)
-                          .populate('items')
-                          .exec()
-                          .catch((e) => {
-                            return console.log(e);
-                          });
-
-    if(!data){
-      res.status(404).json({
-        code: 404,
-        error: 'Checklist Not Found'
-      });      
-    } 
-
+  if(isValidObjectId(req.params.id)){
+    let data = await Checklist.findById(req.params.id)
+    .populate('items')
+    .exec()
+    .catch((e) => {
+      console.log(e);
+    });
+    
     var url = req.protocol + '://' + req.get('host') + req.baseUrl;  
 
     if(data){
@@ -93,6 +88,12 @@ async function getAllbyChecklistId(req, res, next) {
         }
       });
     }
+  } else {
+      res.status(404).json({
+        code: 404,
+        error: 'Checklist Not Found'
+      });      
+    } 
 
 }
   
@@ -130,9 +131,48 @@ async function getOne(req, res, next) {
     }
 }
 
+async function create(req, res, next) {
+  let checklist_id = ObjectID(req.params.id);
+
+  let newItem = req.body.data.attribute;
+      newItem.checklist_id = checklist_id;
+
+  let data = await Item.create(newItem)
+                          .catch((e) => {
+                            console.log(e);
+                            return res.status(422).json({
+                              code: 422,
+                              error: e.message,
+                              debug: e
+                            });  
+                          });
+
+    if(!data){
+      res.status(404).json({
+        code: 404,
+        error: 'Item Not Found'
+      });      
+    } 
+
+    if(data){
+      const url = req.protocol + '://' + req.get('host') + req.baseUrl;  
+      res.status(201).json({
+        data: {
+          type: 'items',
+          id: data._id,
+          attributes: data,
+          links: {
+            self: `${url}/checklists/${data.checklist_id}/items/${data._id}`
+          }
+        }
+      });
+    }
+}
+
 module.exports = {
     getAll: getAll,
     getAllbyChecklistId: getAllbyChecklistId,
     getOne: getOne,
+    create: create,
 
 };

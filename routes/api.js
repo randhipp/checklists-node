@@ -17,4 +17,8 @@ router.get('/checklists/:id', async (req, res, next) => ChecklistController.getO
 router.get('/checklists/:id/items', async (req, res, next) => ItemController.getAllbyChecklistId(req, res, next));
 router.get('/checklists/:id/items/:itemId', async (req, res, next) => ItemController.getOne(req, res, next));
 
+router.post('/checklists/:id/items', async (req, res, next) => ItemController.create(req, res, next));
+router.patch('/checklists/:id/items/:itemId', async (req, res, next) => ItemController.update(req, res, next));
+router.delete('/checklists/:id/items/:itemId', async (req, res, next) => ItemController.delete(req, res, next));
+
 module.exports = router;
