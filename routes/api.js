@@ -15,6 +15,6 @@ router.get('/checklists/items', async (req, res, next) => ItemController.getAll(
 
 router.get('/checklists/:id', async (req, res, next) => ChecklistController.getOne(req, res, next));
 // router.get('/checklists/:id/items', async (req, res, next) => ItemController.getAll(req, res, next));
-router.get('/checklists/:id/items/:itemId', async (req, res, next) => ItemController.getOne(req, res, paginate, next));
+router.get('/checklists/:id/items/:itemId', async (req, res, next) => ItemController.getOne(req, res, next));
 
 module.exports = router;

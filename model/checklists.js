@@ -29,9 +29,17 @@ let checklist = new Schema(
 }
   ,{ 
         collection: "checklists",
-        timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } 
+        timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
+        toJSON: { virtuals: true }
     }
 );
+
+checklist.virtual('items', {
+  ref: 'items',
+  localField: '_id',
+  foreignField: 'checklist_id',
+  justOne: false // set true for one-to-one relationship
+})
 
 checklist.plugin(mongoosePaginate);
 

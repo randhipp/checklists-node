@@ -2,9 +2,11 @@ const mongoose = require("mongoose");
 
 var uri = process.env.DB_URL;
 
+mongoose.set('debug', process.env.DB_DEBUG === true ? true : false);
 mongoose.connect(uri, { 
-    useUnifiedTopology: true, 
-    useNewUrlParser: true 
+    useNewUrlParser: true, 
+    useCreateIndex: true, 
+    useUnifiedTopology: true
 });
 
 const connection = mongoose.connection;

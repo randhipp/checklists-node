@@ -1,9 +1,8 @@
-var Item = require('./../model/checklists');
-let ObjectID = require('mongodb').ObjectID;
+var Checklist = require('./../model/checklists');
   
 async function getOne(req, res, next) {
   
-    const data = await Item.find({}).catch((e) => console.log(e));
+    const data = await Checklist.findById(req.params.id).populate('items').catch((e) => console.log(e));
   
     res.json({
       data: data

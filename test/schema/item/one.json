@@ -10,7 +10,7 @@
             "type": "string"
           },
           "id": {
-            "type": "integer"
+            "type": "string"
           },
           "attributes": {
             "type": "object",

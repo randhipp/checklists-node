@@ -20,35 +20,64 @@ chai.use(chaiHttp);
 chai.use(require('chai-json-schema'));
 
 var oneItemSchema = require('./schema/item/one.json');
+var allAvailableSchema = require('./schema/item/all-available.json');
+
 let token = '6d7f3f6e-269c-4e1b-abf8-9a0add479511';
+var id = "5fbdaca30aac033c531ddb7a";
+var itemId = "5fbdaec179ebb641e20f6e64"
 
 chai.should();
 
 describe("Items API Test", () => {
-    describe("Base URL : /api/v1/checklists/2/items", () => {
-        
-        // // Test to get all items record
-        // it("Should get all items record for given checklist", (done) => {
-        //      chai.request(app)
-        //          .get('/')
-        //          .end((err, res) => {
-        //              res.should.have.status(200);
-        //             //  res.body.to.be.jsonSchema();
-        //              done();
-        //           });
-        // });
-        
+    describe(`/api/v1/checklists/${id}/items`, () => {
         // Test to get single item record
-       it("Should get one item record for given checklist", (done) => {
-            const id = 1;
+        it("Should return unauthorized if no token or wrong token", (done) => {
+            chai.request(app)
+                .get(`/api/v1/checklists/${id}/items`)
+                .set({ "Authorization": `Bearer ` })
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    done();
+                 });
+        });
+        it("Should get all item records for given checklist", (done) => {
              chai.request(app)
-                 .get(`/2/items/${id}`)
+                 .get(`/api/v1/checklists/${id}/items`)
                  .set({ "Authorization": `Bearer ${token}` })
                  .end((err, res) => {
                      res.should.have.status(200);
-                     res.body.should.be.jsonSchema(oneItemSchema);
+                     res.body.should.be.jsonSchema(allAvailableSchema);
                      done();
                   });
-         });
+        });
+
+    });
+
+    describe(`/api/v1/checklists/${id}/items/${itemId}`, () => {
+        // Test to get single item record
+        beforeEach(function(done) {
+            this.timeout(3000); // A very long environment setup.
+            setTimeout(done, 2500);
+        });
+        it("Should return unauthorized if no token or wrong token", (done) => {
+            chai.request(app)
+                .get(`/api/v1/checklists/${id}/items/${itemId}`)
+                .set({ "Authorization": `Bearer ` })
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    done();
+                });
+        });
+        it("Should get one item record for given checklist", (done) => {
+            chai.request(app)
+                .get(`/api/v1/checklists/${id}/items/${itemId}`)
+                .set({ "Authorization": `Bearer ${token}` })
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.be.jsonSchema(oneItemSchema);
+                    done();
+                });
+        });
     });
 });
+

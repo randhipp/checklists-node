@@ -1,4 +1,4 @@
-var Item = require('./../model/items');
+var items = require('./../model/items');
 let ObjectID = require('mongodb').ObjectID;
 
 async function getAll(req, res, next) {
@@ -27,7 +27,7 @@ async function getAll(req, res, next) {
     customLabels: myCustomLabels
   };
 
-  let results = await Item.paginate({}, options).catch(e => console.log(e));
+  let results = await items.paginate({}, options).catch(e => console.log(e));
 
   var itemsResponse = [];
 
@@ -65,13 +65,15 @@ async function getAll(req, res, next) {
 
   
 async function getOne(req, res, next) {
-  
-    const data = await Item.findOne({id: parseInt(req.params.id)}).catch((e) => console.log(e));
-  
+  // res.json(req.params.itemId);
+    // let data = await Item.findById("5fbdaec179ebb641e20f6e64").exec();
+    let data = await items.findById(req.params.itemId).exec();
+
+
     res.json({
       data: {
         type: 'items',
-        id: parseInt(data.id),
+        id: data._id,
         attributes: data,
         links: {
           self: ''
