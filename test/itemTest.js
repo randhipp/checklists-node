@@ -19,6 +19,8 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 chai.use(chaiHttp);
 chai.use(require('chai-json-schema'));
 
+
+var allSchema = require('./schema/item/all.json');
 var oneItemSchema = require('./schema/item/one.json');
 var allAvailableSchema = require('./schema/item/all-available.json');
 
@@ -29,8 +31,37 @@ var itemId = "5fbdaec179ebb641e20f6e64"
 chai.should();
 
 describe("Items API Test", () => {
-    describe(`/api/v1/checklists/${id}/items`, () => {
-        // Test to get single item record
+    describe(`/api/v1/checklists/items`, function() {
+        this.timeout(3000);
+        // Test to get all items
+        it("Should return unauthorized if no token or wrong token", (done) => {
+            chai.request(app)
+                .get(`/api/v1/checklists/items`)
+                .set({ "Authorization": `Bearer ` })
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    done();
+                 });
+        });
+        it("Should get all items", (done) => {
+            chai.request(app)
+                 .get(`/api/v1/checklists/items`)
+                 .set({ "Authorization": `Bearer ${token}` })
+                 .end((err, res) => {
+                     res.should.have.status(200);
+                     res.body.should.be.jsonSchema(allSchema);
+                     done();
+                  });
+        });
+
+    });
+    
+    describe(`/api/v1/checklists/${id}/items`, function () {
+        before(function(done) {
+            this.timeout(3000); // A very long environment setup.
+            setTimeout(done, 2500);
+        });
+        // Test to get all item records for given checklist id
         it("Should return unauthorized if no token or wrong token", (done) => {
             chai.request(app)
                 .get(`/api/v1/checklists/${id}/items`)
@@ -50,12 +81,20 @@ describe("Items API Test", () => {
                      done();
                   });
         });
+        it("Should return 404 if given checklist id was not found.", (done) => {
+            chai.request(app)
+                .get(`/api/v1/checklists/${id}123/items`)
+                .set({ "Authorization": `Bearer ${token}` })
+                .end((err, res) => {
+                    res.should.have.status(404);
+                    done();
+                 });
+       });
 
     });
 
-    describe(`/api/v1/checklists/${id}/items/${itemId}`, () => {
-        // Test to get single item record
-        beforeEach(function(done) {
+    describe(`/api/v1/checklists/${id}/items/${itemId}`, function () {
+        before(function(done) {
             this.timeout(3000); // A very long environment setup.
             setTimeout(done, 2500);
         });
