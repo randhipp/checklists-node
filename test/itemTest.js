@@ -32,7 +32,7 @@ const itemId = '5fbdaec179ebb641e20f6e64';
 chai.should();
 
 describe("Items API Test", () => {
-    describe(`/api/v1/checklists/items`, function() {
+    describe(`GET - /api/v1/checklists/items`, function() {
         this.timeout(3000);
         // Test to get all items
         it("Should return unauthorized if no token or wrong token", (done) => {
@@ -57,7 +57,7 @@ describe("Items API Test", () => {
 
     });
     
-    describe(`/api/v1/checklists/${id}/items`, function () {
+    describe(`GET - /api/v1/checklists/${id}/items`, function () {
         before(function(done) {
             this.timeout(3000); // A very long environment setup.
             setTimeout(done, 2500);
@@ -94,7 +94,7 @@ describe("Items API Test", () => {
 
     });
 
-    describe(`/api/v1/checklists/${id}/items/${itemId}`, function () {
+    describe(`GET - /api/v1/checklists/${id}/items/${itemId}`, function () {
         before(function(done) {
             this.timeout(3000); // A very long environment setup.
             setTimeout(done, 2500);
@@ -120,7 +120,7 @@ describe("Items API Test", () => {
         });
     });
 
-    describe(`CREATE - /api/v1/checklists/${id}/items/`, function () {
+    describe(`POST - /api/v1/checklists/${id}/items/`, function () {
         before(function(done) {
             this.timeout(3000); // A very long environment setup.
             setTimeout(done, 2500);
@@ -152,6 +152,55 @@ describe("Items API Test", () => {
                 .end((err, res) => {
                     res.should.have.status(201);
                     res.body.should.be.jsonSchema(oneItemSchema);
+                    done();
+                });
+        });
+        it("Should not insert new record, data is missing", (done) => {
+            chai.request(app)
+                .post(`/api/v1/checklists/${id}/items`)
+                .set({ "Authorization": `Bearer ${token}` })
+                .set('content-type', 'application/json')
+                .send({
+                   
+                  })
+                .end((err, res) => {
+                    res.should.have.status(422);
+                    done();
+                });
+        });
+        it("Should not insert new record, data.attribute is missing", (done) => {
+            chai.request(app)
+                .post(`/api/v1/checklists/${id}/items`)
+                .set({ "Authorization": `Bearer ${token}` })
+                .set('content-type', 'application/json')
+                .send({
+                    "data": {
+                        "attribute": {
+                          
+                        }
+                      }
+                  })
+                .end((err, res) => {
+                    res.should.have.status(422);
+                    done();
+                });
+        });
+        it("Should not insert new record, data.attribute invalid or missing some fields", (done) => {
+            chai.request(app)
+                .post(`/api/v1/checklists/${id}/items`)
+                .set({ "Authorization": `Bearer ${token}` })
+                .set('content-type', 'application/json')
+                .send({
+                    "data": {
+                        "attribute": {
+                          "description": "78678678 Need to verify this guy house.",
+                          "urgency": "2",
+                          "assignee_id": new ObjectID()
+                        }
+                      }
+                  })
+                .end((err, res) => {
+                    res.should.have.status(422);
                     done();
                 });
         });

@@ -131,15 +131,47 @@ async function getOne(req, res, next) {
     }
 }
 
+function checkJson(str) {
+  try {
+      JSON.parse(str);
+  } catch (e) {
+      return false;
+  }
+  return true;
+}
+
+
 async function create(req, res, next) {
   let checklist_id = ObjectID(req.params.id);
 
+  if(typeof req.body.data == 'undefined'){
+    return res.status(422).json({
+      code: 422,
+      error: 'data is missing',
+    }); 
+  }
+
+  if(typeof req.body.data.attribute == 'undefined'){
+    return res.status(422).json({
+      code: 422,
+      error: 'data.attribute is missing',
+    }); 
+  }
+
   let newItem = req.body.data.attribute;
-      newItem.checklist_id = checklist_id;
+
+  if(checkJson(newItem)){
+    return res.status(422).json({
+      code: 422,
+      error: 'Invalid Json',
+    }); 
+  }
+
+  newItem.checklist_id = checklist_id;
 
   let data = await Item.create(newItem)
                           .catch((e) => {
-                            console.log(e);
+                            // console.log(e);
                             return res.status(422).json({
                               code: 422,
                               error: e.message,
