@@ -201,10 +201,94 @@ async function create(req, res, next) {
     }
 }
 
+async function patch(req, res, next) {
+  let checklist_id = ObjectID(req.params.id);
+
+  if(typeof req.body.data == 'undefined'){
+    return res.status(422).json({
+      code: 422,
+      error: 'data is missing',
+    }); 
+  }
+
+  if(typeof req.body.data.attribute == 'undefined'){
+    return res.status(422).json({
+      code: 422,
+      error: 'data.attribute is missing',
+    }); 
+  }
+
+  let newItem = req.body.data.attribute;
+
+  if(checkJson(newItem)){
+    return res.status(422).json({
+      code: 422,
+      error: 'Invalid Json',
+    }); 
+  }
+
+  var oldData = await Item.findById(req.params.itemId)
+                          .catch((e) => {
+                            // console.log(e);
+                            return res.status(422).json({
+                              code: 422,
+                              error: e.message,
+                              debug: e
+                            });  
+                          });
+
+
+  var attributes = {};
+  for (let prop in newItem) {
+    // console.log(newItem[prop])
+    oldData[prop] = ( typeof newItem[prop] !== 'undefined' || newItem[prop] !== null || newItem[prop] !== "" ) 
+                                      ? newItem[prop] : oldData[prop] ; 
+  }
+    await oldData.save().catch((e)=>{
+      return res.status(422).json({
+        code: 422,
+        error: e.message,
+        debug: e
+      });  
+    });    
+
+    // if(oldData){
+      const url = req.protocol + '://' + req.get('host') + req.baseUrl;  
+      res.status(200).json({
+        data: {
+          type: 'items',
+          id: req.params.id,
+          attributes: oldData,
+          links: {
+            self: `${url}/checklists/${oldData.checklist_id}/items/${req.params.id}`
+          }
+        }
+      });
+}
+
+async function destroy(req, res, next) {
+  await Item.findOneAndDelete({
+                "_id": ObjectID(req.params.itemId),
+                "checklist_id": ObjectID(req.params.id)
+              }).exec()
+              .catch((e) => {
+                // console.log(e);
+                res.status(204).json({
+                  code: 204,
+                  error: 'Item not found, or already deleted.'
+                });    
+              });
+  res.status(204).json({
+    code: 204,
+    message: 'Deleted successfully!'
+  });
+}
+
 module.exports = {
     getAll: getAll,
     getAllbyChecklistId: getAllbyChecklistId,
     getOne: getOne,
     create: create,
-
+    update: patch,
+    delete: destroy
 };

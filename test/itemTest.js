@@ -32,7 +32,7 @@ const itemId = '5fbdaec179ebb641e20f6e64';
 chai.should();
 
 describe("Items API Test", () => {
-    describe(`GET - /api/v1/checklists/items`, function() {
+    describe(`GET - /api/v1/checklists/items`, async function() {
         this.timeout(3000);
         // Test to get all items
         it("Should return unauthorized if no token or wrong token", (done) => {
@@ -57,7 +57,7 @@ describe("Items API Test", () => {
 
     });
     
-    describe(`GET - /api/v1/checklists/${id}/items`, function () {
+    describe(`GET - /api/v1/checklists/${id}/items`, async function () {
         before(function(done) {
             this.timeout(3000); // A very long environment setup.
             setTimeout(done, 2500);
@@ -94,7 +94,7 @@ describe("Items API Test", () => {
 
     });
 
-    describe(`GET - /api/v1/checklists/${id}/items/${itemId}`, function () {
+    describe(`GET - /api/v1/checklists/${id}/items/${itemId}`, async function () {
         before(function(done) {
             this.timeout(3000); // A very long environment setup.
             setTimeout(done, 2500);
@@ -205,5 +205,104 @@ describe("Items API Test", () => {
                 });
         });
     });
+
+
+    describe(`PATCH - /api/v1/checklists/${id}/items/${itemId}`, async function () {
+        // this.timeout(10000);
+        before(function(done) {
+            this.timeout(10000); // A very long environment setup.
+            setTimeout(done, 4000);
+        });
+        it("Should return unauthorized if no token or wrong token", (done) => {
+            chai.request(app)
+                .patch(`/api/v1/checklists/${id}/items/${itemId}`)
+                .set({ "Authorization": `Bearer ` })
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    done();
+                });
+        });
+        it("Should update a record", (done) => {
+            chai.request(app)
+                .patch(`/api/v1/checklists/${id}/items/${itemId}`)
+                .set({ "Authorization": `Bearer ${token}` })
+                .set('content-type', 'application/json')
+                .send({
+                    "data": {
+                      "attribute": {
+                        "description": "Need to verify this guy house",
+                        "due": "2019-01-19 18:34:51",
+                        "urgency": 2,
+                        "assignee_id": new ObjectID()
+                      }
+                    }
+                  })
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    done();
+                });
+        });
+        it("Should not update a record if has invalid body", (done) => {
+            chai.request(app)
+                .patch(`/api/v1/checklists/${id}/items/${itemId}`)
+                .set({ "Authorization": `Bearer ${token}` })
+                .set('content-type', 'application/json')
+                .send({
+                    "data": {
+                        "attribute": {
+                          "description": '',
+                        }
+                      }
+                  })
+                .end((err, res) => {
+                    res.should.have.status(422);
+                    done();
+                });
+        });
+        it("Should return error if record was not found", (done) => {
+            chai.request(app)
+                .patch(`/api/v1/checklists/${id}/items/${itemId}`)
+                .set({ "Authorization": `Bearer ${token}` })
+                .end((err, res) => {
+                    res.should.have.status(422);
+                    done();
+                });
+        });
+    });
+
+    describe(`DELETE - /api/v1/checklists/${id}/items/${itemId}`, function () {
+        before(function(done) {
+            this.timeout(5000); // A very long environment setup.
+            setTimeout(done, 3000);
+        });
+        it("Should return unauthorized if no token or wrong token", (done) => {
+            chai.request(app)
+                .post(`/api/v1/checklists/${id}/items/${itemId}`)
+                .set({ "Authorization": `Bearer ` })
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    done();
+                });
+        });
+        it("Should delete a record return 204", (done) => {
+            chai.request(app)
+                .delete(`/api/v1/checklists/${id}/items/${itemId}`)
+                .set({ "Authorization": `Bearer ${token}` })
+                .end((err, res) => {
+                    res.should.have.status(204);
+                    done();
+                });
+        });
+        it("Should return error if record was not found", (done) => {
+            chai.request(app)
+                .delete(`/api/v1/checklists/${id}/items/${itemId}`)
+                .set({ "Authorization": `Bearer ${token}` })
+                .end((err, res) => {
+                    res.should.have.status(204);
+                    done();
+                });
+        });
+    });
+
 });
 
