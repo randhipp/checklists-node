@@ -2,7 +2,7 @@
 
 var chai = require('chai');
 var chaiHttp = require('chai-http');
-// var app = 'http://localhost:3000/api/v1/checklists';
+// var app = 'http://localhost:6000/api/v1/checklists';
 
 const app = require('./../bin/www');
 let ObjectID = require('mongodb').ObjectID;
@@ -32,9 +32,11 @@ const itemId = '5fbdaec179ebb641e20f6e64';
 chai.should();
 
 describe("Items API Test", () => {
-    describe(`GET - /api/v1/checklists/items`, async function() {
-        this.timeout(3000);
-        // Test to get all items
+    describe(`GET - /api/v1/checklists/items`, function() {
+        before(function(done) {
+            this.timeout(6000); // A very long environment setup.
+            setTimeout(done, 2500);
+        });        // Test to get all items
         it("Should return unauthorized if no token or wrong token", (done) => {
             chai.request(app)
                 .get(`/api/v1/checklists/items`)
@@ -57,9 +59,9 @@ describe("Items API Test", () => {
 
     });
     
-    describe(`GET - /api/v1/checklists/${id}/items`, async function () {
+    describe(`GET - /api/v1/checklists/${id}/items`, function () {
         before(function(done) {
-            this.timeout(3000); // A very long environment setup.
+            this.timeout(6000); // A very long environment setup.
             setTimeout(done, 2500);
         });
         // Test to get all item records for given checklist id
@@ -94,9 +96,9 @@ describe("Items API Test", () => {
 
     });
 
-    describe(`GET - /api/v1/checklists/${id}/items/${itemId}`, async function () {
+    describe(`GET - /api/v1/checklists/${id}/items/${itemId}`, function () {
         before(function(done) {
-            this.timeout(3000); // A very long environment setup.
+            this.timeout(6000); // A very long environment setup.
             setTimeout(done, 2500);
         });
         it("Should return unauthorized if no token or wrong token", (done) => {
@@ -122,7 +124,7 @@ describe("Items API Test", () => {
 
     describe(`POST - /api/v1/checklists/${id}/items/`, function () {
         before(function(done) {
-            this.timeout(3000); // A very long environment setup.
+            this.timeout(6000); // A very long environment setup.
             setTimeout(done, 2500);
         });
         it("Should return unauthorized if no token or wrong token", (done) => {
@@ -207,11 +209,11 @@ describe("Items API Test", () => {
     });
 
 
-    describe(`PATCH - /api/v1/checklists/${id}/items/${itemId}`, async function () {
+    describe(`PATCH - /api/v1/checklists/${id}/items/${itemId}`, function () {
         // this.timeout(10000);
         before(function(done) {
-            this.timeout(10000); // A very long environment setup.
-            setTimeout(done, 4000);
+            this.timeout(6000); // A very long environment setup.
+            setTimeout(done, 2500);
         });
         it("Should return unauthorized if no token or wrong token", (done) => {
             chai.request(app)
@@ -273,7 +275,7 @@ describe("Items API Test", () => {
     describe(`DELETE - /api/v1/checklists/${id}/items/${itemId}`, function () {
         before(function(done) {
             this.timeout(5000); // A very long environment setup.
-            setTimeout(done, 3000);
+            setTimeout(done, 6000);
         });
         it("Should return unauthorized if no token or wrong token", (done) => {
             chai.request(app)
