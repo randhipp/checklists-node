@@ -1,0 +1,106 @@
+{
+    "type": "object",
+    "properties": {
+      "meta": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          }
+        }
+      },
+      "data": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "attributes": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "is_completed": {
+                  "type": "boolean"
+                },
+                "completed_at": {
+                  "type": "null"
+                },
+                "completed_by": {
+                  "type": "null"
+                },
+                "due": {
+                  "type": ["integer","null"]
+                },
+                "urgency": {
+                  "type": "integer"
+                },
+                "updated_by": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "created_by": {
+                  "type": ["integer","null"]
+                },
+                "checklist_id": {
+                  "type": "string"
+                },
+                "assignee_id": {
+                  "type": ["integer","null"]
+                },
+                "task_id": {
+                  "type": "null"
+                },
+                "deleted_at": {
+                  "type": "null"
+                },
+                "created_at": {
+                  "type": "string"
+                },
+                "updated_at": {
+                  "type": "string"
+                }
+              }
+            },
+            "links": {
+              "type": "object",
+              "properties": {
+                "self": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "links": {
+        "type": "object",
+        "properties": {
+          "first": {
+            "type": ["string","null"]
+          },
+          "last": {
+            "type": ["string","null"]
+          },
+          "next": {
+            "type": ["string","null"]
+          },
+          "prev": {
+            "type": ["string","null"]
+          }
+        }
+      }
+    }
+  }
+  

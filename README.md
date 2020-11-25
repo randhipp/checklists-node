@@ -1,15 +1,22 @@
 # Node-Checklist - BE Test
 
+![Checklist - Node.js CI](https://github.com/randhipp/checklists-node/workflows/Checklist%20-%20Node.js%20CI/badge.svg)
+
 NodeJS using Express and Mongoose
 
 ## How To Run
 
-git clone
+- git clone this repo
+- create new .env or rename .env.example to .env
+- set db url for mongodb connection
+- then run :
 
 ```bash
 npm i
 npm run debug
 ```
+
+your api will run on http://localhost:3000
 
 ## LIVE DEV
 
@@ -18,6 +25,11 @@ https://checklists.wafvel.com:2087
 
 code updated using github action.
 
+# DOCS
+
+https://documenter.getpostman.com/view/6587471/TVewZPtC
+
+[postman.json]('ChecklistNode.postman_collection.json')
 # Auth
 
 Auth using token based express middleware
@@ -36,7 +48,11 @@ You can use one of thoose token to auth in api request `body.token` or in header
 
 ## TESTING ##
 
+using mocha and chai
+
 ```bash
 npm test
 ```
+
+![images.jpg](.github/images/image1581.png)
 

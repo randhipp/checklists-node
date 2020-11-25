@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const Schema = mongoose.Schema;
 
@@ -28,8 +29,18 @@ let checklist = new Schema(
 }
   ,{ 
         collection: "checklists",
-        timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } 
+        timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
+        toJSON: { virtuals: true }
     }
 );
+
+checklist.virtual('items', {
+  ref: 'items',
+  localField: '_id',
+  foreignField: 'checklist_id',
+  justOne: false // set true for one-to-one relationship
+})
+
+checklist.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("checklists", checklist);

@@ -1,0 +1,83 @@
+{
+    "type": "object",
+    "title": "Checklist Response",
+    "properties": {
+      "data": {
+        "type": "object",
+        "required": [
+          "type",
+          "id",
+          "attributes",
+          "links"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "attributes": {
+            "type": "object",
+            "title": "Cheklist Attributes",
+            "required": [
+              "object_domain",
+              "object_id",
+              "description"
+            ],
+            "properties": {
+              "object_domain": {
+                "type": "string"
+              },
+              "object_id": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "is_completed": {
+                "type": "boolean"
+              },
+              "completed_at": {
+                "type": "null"
+              },
+              "updated_by": {
+                "type": ["string","null"]
+              },
+              "updated_at": {
+                "type": ["string","null"]
+              },
+              "created_at": {
+                "type": "string"
+              },
+              "due": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time",
+                "example": "2020-01-29 11:44:40"
+              },
+              "urgency": {
+                "type": "integer"
+              }
+            }
+          },
+          "links": {
+            "type": "object",
+            "required": [
+              "self"
+            ],
+            "properties": {
+              "self": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "required": [
+      "data"
+    ]
+}

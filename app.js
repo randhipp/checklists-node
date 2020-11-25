@@ -14,7 +14,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(logger('dev'));
+// app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -43,10 +43,18 @@ app.use('/api/v1',
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   // next(createError(404));
-  return res.json({
+  return res.status(404).json({
     code: 404,
     error: 'Not Found'
   })
+});
+
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+      console.error(err);
+      return res.status(400).send({ status: 404, message: err.message }); // Bad request
+  }
+  next();
 });
 
 // error handler
