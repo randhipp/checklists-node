@@ -12,7 +12,7 @@ on:
 jobs:
   test:
     name: Test with node 12.x
-    runs-on: mongo:4.2-bionic
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -35,7 +35,7 @@ jobs:
   deploy:
     name: Deploy to Production VPS
     needs: [test]
-    runs-on: mongo:4.2-bionic
+    runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/development'
     steps:
     - name: SSH and deploy node app
