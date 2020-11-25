@@ -48,7 +48,11 @@ You can use one of thoose token to auth in api request `body.token` or in header
 
 ## TESTING ##
 
+using mocha and chai
+
 ```bash
 npm test
 ```
+
+![images.jpg](.github/images/image1581.png)
 
